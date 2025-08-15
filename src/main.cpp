@@ -1,4 +1,4 @@
-#include "imgui_bundle/imgui_bundle.h"
+#include "immapp/immapp.h"
 
 int main(int, char **)
 {
@@ -8,6 +8,6 @@ int main(int, char **)
     };
     runnerParams.windowSize = {300, 100};
     runnerParams.windowTitle = "Hello ImGui Bundle";
-    ImGuiBundle::Run(runnerParams);
+    ImmApp::Run(runnerParams);
     return 0;
 }

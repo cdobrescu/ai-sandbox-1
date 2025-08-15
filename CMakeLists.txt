@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include(FetchContent)
 
+Set(FETCHCONTENT_QUIET FALSE)
 FetchContent_Declare(
   imgui_bundle
   GIT_REPOSITORY https://github.com/pthom/imgui_bundle.git
@@ -14,6 +15,7 @@ FetchContent_Declare(
 
 FetchContent_MakeAvailable(imgui_bundle)
 
-add_executable(candlestick_app src/main.cpp)
+# add_executable(candlestick_app src/main.cpp)
 
-target_link_libraries(candlestick_app PRIVATE imgui_bundle::imgui_bundle)
+# target_link_libraries(candlestick_app PRIVATE imgui_bundle::imgui_bundle)
+imgui_bundle_add_app(candlestick_app src/main.cpp)
