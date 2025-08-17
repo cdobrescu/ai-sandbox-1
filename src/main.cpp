@@ -104,6 +104,8 @@ int main(int, char **)
     };
     runnerParams.windowSize = {1200, 800};
     runnerParams.windowTitle = "Candlestick App";
-    ImmApp::Run(runnerParams);
+    ImmApp::AddOnsParams addOnsParams;
+    addOnsParams.withImplot = true;
+    ImmApp::Run(runnerParams, addOnsParams);
     return 0;
 }

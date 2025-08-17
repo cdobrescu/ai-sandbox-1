@@ -14,17 +14,13 @@ FetchContent_Declare(
 )
 
 FetchContent_MakeAvailable(imgui_bundle)
-
 FetchContent_Declare(
   cpr
   GIT_REPOSITORY https://github.com/libcpr/cpr.git
-  GIT_TAG 1.10.0
+  GIT_TAG 1.11.3
 )
 FetchContent_MakeAvailable(cpr)
 
 
-# add_executable(candlestick_app src/main.cpp)
-
-# target_link_libraries(candlestick_app PRIVATE imgui_bundle::imgui_bundle)
 imgui_bundle_add_app(candlestick_app src/main.cpp src/binance_client.cpp)
 target_link_libraries(candlestick_app PRIVATE cpr::cpr)
