@@ -98,7 +98,7 @@ int main(int, char **)
 
             using namespace hmdf;
             using DoubleVec = std::vector<double>;
-            StdDataFrame<unsigned long> df;
+            StdDataFrame<double> df;
             df.load_index(std::move(open_times));
             df.load_column("opens", std::move(opens));
             df.load_column("highs", std::move(highs));
@@ -106,12 +106,10 @@ int main(int, char **)
             df.load_column("closes", std::move(closes));
 
             ewm_v<double, unsigned long> ema9_visitor(exponential_decay_spec::span, 9);
-            df.visit<double>("closes", ema9_visitor);
-            DoubleVec ema9_values = ema9_visitor.get_result();
+            const auto      &ema9_values = df.single_act_visit<double>("closes", ema9_visitor).get_result();
 
             ewm_v<double, unsigned long> ema21_visitor(exponential_decay_spec::span, 21);
-            df.visit<double>("closes", ema21_visitor);
-            DoubleVec ema21_values = ema21_visitor.get_result();
+            const auto      &ema21_values = df.single_act_visit<double>("closes", ema21_visitor).get_result();
 
             if (ImPlot::BeginPlot("Candlestick Chart", "Time", "Price")) {
                 const auto& df_opens = df.get_column<double>("opens");
