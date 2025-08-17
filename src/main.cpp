@@ -4,6 +4,8 @@
 #include "binance_client.h"
 #include <iostream>
 #include <vector>
+#include "DataFrame/DataFrame.h"
+#include "DataFrame/DataFrameStatsVisitors.h"
 
 namespace MyImPlot {
    int BinarySearch(const double* arr, int l, int r, double x) {
@@ -94,8 +96,30 @@ int main(int, char **)
                 closes.push_back(c.close);
             }
 
+            using namespace hmdf;
+            using DoubleVec = std::vector<double>;
+            StdDataFrame<double> df;
+            df.load_index(std::move(open_times));
+            df.load_column("opens", std::move(opens));
+            df.load_column("highs", std::move(highs));
+            df.load_column("lows", std::move(lows));
+            df.load_column("closes", std::move(closes));
+
+            ewm_v<double, unsigned long> ema9_visitor(exponential_decay_spec::span, 9);
+            const auto      &ema9_values = df.single_act_visit<double>("closes", ema9_visitor).get_result();
+
+            ewm_v<double, unsigned long> ema21_visitor(exponential_decay_spec::span, 21);
+            const auto      &ema21_values = df.single_act_visit<double>("closes", ema21_visitor).get_result();
+
             if (ImPlot::BeginPlot("Candlestick Chart", "Time", "Price")) {
-                MyImPlot::PlotCandlestick("BTC/USDT", open_times.data(), opens.data(), closes.data(), lows.data(), highs.data(), candlesticks.size());
+                const auto& df_opens = df.get_column<double>("opens");
+                const auto& df_closes = df.get_column<double>("closes");
+                const auto& df_lows = df.get_column<double>("lows");
+                const auto& df_highs = df.get_column<double>("highs");
+
+                MyImPlot::PlotCandlestick("BTC/USDT", df.get_index().data(), df_opens.data(), df_closes.data(), df_lows.data(), df_highs.data(), candlesticks.size());
+                ImPlot::PlotLine("EMA9", df.get_index().data(), ema9_values.data(), candlesticks.size());
+                ImPlot::PlotLine("EMA21", df.get_index().data(), ema21_values.data(), candlesticks.size());
                 ImPlot::EndPlot();
             }
         } else {
