@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include "DataFrame/DataFrame.h"
 
 struct Candlestick {
     long long openTime;
@@ -20,4 +21,6 @@ struct Candlestick {
 class BinanceClient {
 public:
     std::vector<Candlestick> getCandlestickData(const std::string& symbol, const std::string& interval, int limit);
+    hmdf::StdDataFrame<double> createDataFrame(const std::vector<Candlestick>& candlesticks);
+    hmdf::StdDataFrame<double> getCandlestickDataAsDataFrame(const std::string& symbol, const std::string& interval, int limit);
 };

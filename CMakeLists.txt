@@ -27,5 +27,17 @@ FetchContent_Declare(
     GIT_TAG 3.6.0)
 FetchContent_MakeAvailable(DataFrame)
 
-imgui_bundle_add_app(candlestick_app src/main.cpp src/binance_client.cpp)
-target_link_libraries(candlestick_app PRIVATE cpr::cpr DataFrame)
+##########################################################
+# Prepare hello_imgui during configure time
+##########################################################
+# Download hello_imgui if not part of the project
+if (NOT TARGET hello_imgui)
+    include(FetchContent)
+    Set(FETCHCONTENT_QUIET FALSE)
+    FetchContent_Declare(hello_imgui GIT_REPOSITORY https://github.com/pthom/hello_imgui.git GIT_TAG master)
+    FetchContent_MakeAvailable(hello_imgui)
+endif()
+
+
+hello_imgui_add_app(candlestick_app src/main.cpp src/Layout.cpp src/AppState.cpp)
+target_link_libraries(candlestick_app PRIVATE cpr::cpr DataFrame imgui_bundle)
